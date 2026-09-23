@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 340'%3E%3Crect width='340' height='340' rx='40' fill='%23141210'/%3E%3Cg fill='none' stroke='%23F2E9DA' stroke-width='22' stroke-linecap='round'%3E%3Cpath d='M95,60 C215,130 215,210 95,280'/%3E%3Cpath d='M245,60 C125,130 125,210 245,280'/%3E%3C/g%3E%3Cg stroke='%23F2E9DA' stroke-width='16' stroke-linecap='round'%3E%3Cline x1='118' y1='122' x2='222' y2='122'/%3E%3Cline x1='108' y1='170' x2='232' y2='170'/%3E%3Cline x1='118' y1='218' x2='222' y2='218'/%3E%3C/g%3E%3C/svg%3E">
+<title>Bioinformatics — Public Code Library</title>
+<style>
+  :root {
+    --black: #141210;
+    --beige: #F2E9DA;
+    --beige-soft: #E7DCC6;
+    --accent: #C9B896;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background: var(--beige); color: var(--black); }
+
+  /* ---------- Header / Hero ---------- */
+  header { background: var(--black); color: var(--beige); padding: 48px 24px 64px; text-align: center; }
+  .logo-svg { width: min(520px, 90vw); height: auto; display: block; margin: 0 auto 20px; }
+  header p { max-width: 640px; margin: 0 auto; font-size: 17px; line-height: 1.6; color: var(--beige-soft); }
+
+  /* ---------- Filter bar ---------- */
+  .filters { position: sticky; top: 0; z-index: 10; background: var(--black); display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 14px 16px; }
+  .filters button {
+    border: 3px solid var(--beige); background: transparent; color: var(--beige);
+    font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;
+    padding: 9px 20px; cursor: pointer; transition: all .15s ease;
+  }
+  .filters button:hover, .filters button.active { background: var(--beige); color: var(--black); }
+
+  /* ---------- Grid ---------- */
+  main { max-width: 1180px; margin: 0 auto; padding: 40px 20px 80px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 26px; }
+  .card { background: #fffdf7; border: 3px solid var(--black); display: flex; flex-direction: column; transition: transform .15s ease; }
+  .card:hover { transform: translateY(-4px); }
+  .card-domain { background: var(--black); color: var(--beige); font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding: 8px 16px; }
+  .card-title { font-size: 20px; font-weight: 900; padding: 16px 16px 6px; }
+  .card-desc { font-size: 14px; color: #4a453d; padding: 0 16px 14px; line-height: 1.5; flex: 1; }
+  .code-wrap { position: relative; }
+  .code-wrap pre { background: var(--black); color: #e9e2d2; padding: 18px 16px; overflow-x: auto; font-size: 13px; line-height: 1.55; border-top: 3px solid var(--black); }
+  .code-wrap code { font-family: "Courier New", monospace; }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px; border: 2px solid var(--beige);
+    background: transparent; color: var(--beige); font-size: 11px; font-weight: 700;
+    letter-spacing: 1px; padding: 4px 12px; cursor: pointer; text-transform: uppercase;
+  }
+  .copy-btn:hover { background: var(--beige); color: var(--black); }
+
+
+  /* ---------- Brand assets ---------- */
+  .brand { max-width: 1180px; margin: 0 auto; padding: 0 20px 70px; text-align: center; }
+  .brand h2 { font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
+  .brand > p { margin: 8px 0 26px; color: #4a453d; font-size: 15px; }
+  .brand-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 26px; }
+  .brand-item { border: 3px solid var(--black); }
+  footer { background: var(--black); color: var(--beige); text-align: center; padding: 26px 16px; font-size: 13px; letter-spacing: 1px; }
+  .hidden { display: none; }
+  @media (max-width: 420px) { .grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" class="logo-svg" aria-label="Bioinformatics logo">
+  <g fill="none" stroke="#F2E9DA" stroke-width="16" stroke-linecap="round">
+    <path d="M95,60 C215,130 215,210 95,280"/>
+    <path d="M205,60 C85,130 85,210 205,280"/>
+  </g>
+  <g stroke="#F2E9DA" stroke-width="12" stroke-linecap="round">
+    <line x1="112" y1="118" x2="188" y2="118"/>
+    <line x1="102" y1="170" x2="198" y2="170"/>
+    <line x1="112" y1="222" x2="188" y2="222"/>
+  </g>
+  <circle cx="150" cy="170" r="14" fill="#F2E9DA"/>
+  <text x="250" y="200" font-family="Arial Black, Arial, sans-serif" font-size="66" font-weight="900" letter-spacing="2" fill="#F2E9DA">BIOINFORMATICS</text>
+  <rect x="250" y="228" width="590" height="14" fill="#F2E9DA"/>
+  <rect x="250" y="252" width="300" height="8" fill="#C9B896"/>
+</svg>
+  <p>A public library of ready-to-use Python code for bioinformatics, marine science, and environmental science. Open, read, and copy any snippet.</p>
+</header>
+
+<nav class="filters">
+  <button class="active" onclick="filterCards('All', this)">All</button>
+  <button onclick="filterCards('Bioinformatics', this)">Bioinformatics</button>
+  <button onclick="filterCards('Marine Science', this)">Marine Science</button>
+  <button onclick="filterCards('Environmental Science', this)">Environmental Science</button>
+</nav>
+
+<main>
+  <div class="grid">
+    
+    <article class="card" data-domain="Bioinformatics">
+      <div class="card-domain">Bioinformatics</div>
+      <h3 class="card-title">GC Content Calculator</h3>
+      <p class="card-desc">Computes the GC percentage of a DNA sequence</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>seq = &quot;ATGCGATCGTACG&quot;
+gc_content = (seq.count(&#x27;G&#x27;) + seq.count(&#x27;C&#x27;)) / len(seq) * 100
+print(f&#x27;GC Content: {gc_content:.2f}%&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Bioinformatics">
+      <div class="card-domain">Bioinformatics</div>
+      <h3 class="card-title">DNA to RNA Transcription</h3>
+      <p class="card-desc">Converts a DNA sequence into RNA by replacing T with U</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>dna_seq = &quot;ATGCGTACG&quot;
+rna_seq = dna_seq.replace(&#x27;T&#x27;, &#x27;U&#x27;)
+print(f&#x27;RNA Sequence: {rna_seq}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Bioinformatics">
+      <div class="card-domain">Bioinformatics</div>
+      <h3 class="card-title">DNA Complement</h3>
+      <p class="card-desc">Builds the complementary DNA strand</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>dna = &quot;ATGC&quot;
+complement = {&#x27;A&#x27;: &#x27;T&#x27;, &#x27;T&#x27;: &#x27;A&#x27;, &#x27;G&#x27;: &#x27;C&#x27;, &#x27;C&#x27;: &#x27;G&#x27;}
+comp_dna = &quot;&quot;.join(complement[base] for base in dna)
+print(f&quot;Complement: {comp_dna}&quot;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Bioinformatics">
+      <div class="card-domain">Bioinformatics</div>
+      <h3 class="card-title">Reverse Complement</h3>
+      <p class="card-desc">Returns the reverse complement of a DNA sequence</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>dna = &quot;ATGCGT&quot;
+complement = {&#x27;A&#x27;: &#x27;T&#x27;, &#x27;T&#x27;: &#x27;A&#x27;, &#x27;G&#x27;: &#x27;C&#x27;, &#x27;C&#x27;: &#x27;G&#x27;}
+rev_comp = &quot;&quot;.join(complement[base] for base in reversed(dna))
+print(f&#x27;Reverse Complement: {rev_comp}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Bioinformatics">
+      <div class="card-domain">Bioinformatics</div>
+      <h3 class="card-title">Start Codon Position</h3>
+      <p class="card-desc">Finds the index of the first ATG start codon</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>seq = &quot;CCATGGCTAGCATG&quot;
+start_pos = seq.find(&#x27;ATG&#x27;)
+print(f&#x27;Start Codon Position: {start_pos}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Bioinformatics">
+      <div class="card-domain">Bioinformatics</div>
+      <h3 class="card-title">Biopython FASTA Reader</h3>
+      <p class="card-desc">Reads a FASTA file and prints record ID and length</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>from Bio import SeqIO
+record = SeqIO.read(&quot;sequence.fasta&quot;, &quot;fasta&quot;)
+print(record.id, len(record.seq))</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Bioinformatics">
+      <div class="card-domain">Bioinformatics</div>
+      <h3 class="card-title">RNA to Protein</h3>
+      <p class="card-desc">Translates an RNA sequence into a protein using Biopython</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>from Bio.Seq import Seq
+rna = Seq(&quot;AUGCGUACG&quot;)
+protein = rna.translate()
+print(f&#x27;Protein Sequence: {protein}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Bioinformatics">
+      <div class="card-domain">Bioinformatics</div>
+      <h3 class="card-title">Hamming Distance</h3>
+      <p class="card-desc">Counts the differences between two aligned sequences</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>seq1 = &quot;GAGCCTACTAACGGGAT&quot;
+seq2 = &quot;CATCGTAATGACGGCCT&quot;
+distance = sum(1 for a, b in zip(seq1, seq2) if a != b)
+print(f&#x27;Hamming Distance: {distance}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Bioinformatics">
+      <div class="card-domain">Bioinformatics</div>
+      <h3 class="card-title">Base Counter</h3>
+      <p class="card-desc">Counts how many times each base occurs in the DNA</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>from collections import Counter
+dna = &quot;ATGCGATCGTACG&quot;
+counts = Counter(dna)
+print(dict(counts))</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Salinity from Conductivity</h3>
+      <p class="card-desc">Approximates salinity (PSU) from conductivity and temperature</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>conductivity = 42
+temperature = 15
+salinity = conductivity * 0.5  # Approximate PSU
+print(f&#x27;Salinity: {salinity} PSU&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Seawater Density</h3>
+      <p class="card-desc">Estimates seawater density from temperature and salinity</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>temp = 20      # °C
+sal = 35       # PSU
+density = 999.84  # kg/m³ (approx.)
+print(f&#x27;Seawater Density: {density} kg/m³&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Sound Speed in Seawater</h3>
+      <p class="card-desc">Computes sound speed (m/s) using the Mackenzie equation</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>T = 10   # Temperature °C
+S = 35   # Salinity PSU
+speed = 1449.2 + 4.6*T - 0.055*T**2 + 0.00029*T**3 + (1.34 - 0.01*T)*(S - 35)
+print(f&#x27;Sound Speed: {speed:.1f} m/s&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Hydrostatic Pressure</h3>
+      <p class="card-desc">Calculates total pressure (atm) at a given depth</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>depth = 50  # meters
+pressure = 1 + (depth / 10)
+print(f&#x27;Hydrostatic Pressure: {pressure} atm&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Chlorophyll from Band Ratio</h3>
+      <p class="card-desc">Estimates chlorophyll-a from ocean color band ratio</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>band443 = 0.5
+band555 = 1.2
+ratio = band443 / band555
+chla = 10 ** (0.3 - 2.4 * ratio)  # empirical
+print(f&#x27;Chlorophyll: {chla:.3f} mg/m³&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Light Attenuation</h3>
+      <p class="card-desc">Calculates remaining light at depth (Beer–Lambert law)</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>import math
+I0 = 1000        # Surface light
+k = 0.15         # Extinction coefficient
+depth = 15
+I = I0 * math.exp(-k * depth)
+print(f&#x27;Light Intensity: {I:.2f}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Coordinate Distance</h3>
+      <p class="card-desc">Great-circle style distance between two lat/lon points</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>lat1, lon1 = 27.25, 33.40
+lat2, lon2 = 27.30, 33.45
+distance = ((lat2 - lat1)**2 + (lon2 - lon1)**2) ** 0.5 * 111
+print(f&#x27;Distance: {distance:.2f} km&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Degree Heating Weeks</h3>
+      <p class="card-desc">Measures cumulative heat stress for coral bleaching</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>sst = 31.5        # Sea surface temperature
+threshold = 30.0  # Bleaching threshold
+dhw = (sst - threshold) * 4
+print(f&#x27;Degree Heating Weeks: {dhw}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Shannon Diversity</h3>
+      <p class="card-desc">Computes the Shannon diversity index for species counts</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>import math
+species_counts = [12, 8, 5, 20, 3]
+total = sum(species_counts)
+shannon = -sum((c/total) * math.log(c/total) for c in species_counts)
+print(f&#x27;Shannon Index: {shannon:.3f}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Marine Science">
+      <div class="card-domain">Marine Science</div>
+      <h3 class="card-title">Dissolved Oxygen Saturation</h3>
+      <p class="card-desc">Calculates maximum dissolved oxygen at given temp/salinity</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>temp = 25   # °C
+sal = 35    # PSU
+do_sat = 14.652 - 0.41022*temp + 0.007991*temp**2 - 0.000077774*temp**3
+print(f&#x27;DO Saturation: {do_sat:.2f} mg/L&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">CO₂ Emissions from Travel</h3>
+      <p class="card-desc">Calculates total CO₂ emitted for a trip distance</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>distance_km = 100
+factor = 0.12  # kg CO₂ per km
+co2_emitted = distance_km * factor
+print(f&#x27;CO₂ Emitted: {co2_emitted} kg&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">Air Quality Category</h3>
+      <p class="card-desc">Categorizes air quality based on PM2.5 concentration</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>pm25_conc = 35
+if pm25_conc &lt;= 12:
+    status = &quot;Good&quot;
+elif pm25_conc &lt; 35:
+    status = &quot;Moderate&quot;
+else:
+    status = &quot;Unhealthy&quot;
+print(f&#x27;Air Quality: {status}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">Radioactive Decay</h3>
+      <p class="card-desc">Computes the remaining amount after decay time</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>initial_amount = 100
+half_life = 5.0
+time_passed = 10
+remaining = initial_amount * 0.5 ** (time_passed / half_life)
+print(f&#x27;Remaining: {remaining}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">NDVI Index</h3>
+      <p class="card-desc">Calculates normalized difference vegetation index</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>nir = 0.8  # Near-infrared reflectance
+red = 0.2  # Red reflectance
+ndvi = (nir - red) / (nir + red)
+print(f&#x27;NDVI Index: {ndvi:.2f}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">BOD₅ Level</h3>
+      <p class="card-desc">Measures the amount of organic pollution in water</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>do_initial = 8.5  # mg/L
+do_final = 3.2    # mg/L
+bod = do_initial - do_final
+print(f&#x27;BOD₅ Level: {bod} mg/L&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">Soil Erosion (USLE)</h3>
+      <p class="card-desc">Estimates annual soil loss per unit area</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>R = 100    # Rainfall erosivity
+K = 0.32   # Soil erodibility
+LS = 2.1   # Topographic factor
+A = R * K * LS
+print(f&#x27;Estimated Erosion: {A} t/ha/yr&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">Solar Energy Output</h3>
+      <p class="card-desc">Computes daily energy from a solar panel array</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>area = 10        # m²
+efficiency = 0.18
+irradiance = 5.5  # kWh/m²/day
+daily_energy = area * efficiency * irradiance
+print(f&#x27;Daily Energy: {daily_energy} kWh&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">Logistic Growth</h3>
+      <p class="card-desc">Calculates logistic population growth rate</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>r = 0.1    # Growth rate
+K = 1000   # Carrying capacity
+N = 200    # Current population
+dN_dt = r * N * (1 - N / K)
+print(f&#x27;Population Growth Rate: {dN_dt:.1f}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">Bioaccumulation Factor</h3>
+      <p class="card-desc">Determines the bioaccumulation factor (BAF)</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>conc_organism = 5.0
+conc_water = 0.1
+baf = conc_organism / conc_water
+print(f&#x27;Bioaccumulation Factor: {baf}&#x27;)</code></pre>
+      </div>
+    </article>
+    <article class="card" data-domain="Environmental Science">
+      <div class="card-domain">Environmental Science</div>
+      <h3 class="card-title">Recycling Efficiency</h3>
+      <p class="card-desc">Calculates the percentage of waste recycled</p>
+      <div class="code-wrap">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>recycled_mass = 45
+total_waste = 120
+efficiency = (recycled_mass / total_waste) * 100
+print(f&#x27;Recycling Efficiency: {efficiency:.1f}%&#x27;)</code></pre>
+      </div>
+    </article>
+  </div>
+</main>
+
+<section class="brand">
+  <h2>Brand Assets</h2>
+  <p>Official logo — bold-line DNA mark in black &amp; beige.</p>
+  <div class="brand-row">
+    <div class="brand-item"><svg style="width:100%;height:auto;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340">
+  <rect width="900" height="340" fill="#F2E9DA"/>
+  <!-- DNA helix mark, bold strokes -->
+  <g fill="none" stroke="#141210" stroke-width="16" stroke-linecap="round">
+    <path d="M95,60 C215,130 215,210 95,280"/>
+    <path d="M205,60 C85,130 85,210 205,280"/>
+  </g>
+  <g stroke="#141210" stroke-width="12" stroke-linecap="round">
+    <line x1="112" y1="118" x2="188" y2="118"/>
+    <line x1="102" y1="170" x2="198" y2="170"/>
+    <line x1="112" y1="222" x2="188" y2="222"/>
+  </g>
+  <!-- Accent node -->
+  <circle cx="150" cy="170" r="14" fill="#141210"/>
+  <!-- Wordmark -->
+  <text x="250" y="200" font-family="Arial Black, Arial, sans-serif" font-size="66" font-weight="900" letter-spacing="2" fill="#141210">BIOINFORMATICS</text>
+  <!-- Bold underline -->
+  <rect x="250" y="228" width="590" height="14" fill="#141210"/>
+  <rect x="250" y="252" width="300" height="8" fill="#141210"/>
+</svg></div>
+    <div class="brand-item"><svg style="width:100%;height:auto;display:block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340">
+  <rect width="900" height="340" fill="#141210"/>
+  <!-- DNA helix mark, bold strokes -->
+  <g fill="none" stroke="#F2E9DA" stroke-width="16" stroke-linecap="round">
+    <path d="M95,60 C215,130 215,210 95,280"/>
+    <path d="M205,60 C85,130 85,210 205,280"/>
+  </g>
+  <g stroke="#F2E9DA" stroke-width="12" stroke-linecap="round">
+    <line x1="112" y1="118" x2="188" y2="118"/>
+    <line x1="102" y1="170" x2="198" y2="170"/>
+    <line x1="112" y1="222" x2="188" y2="222"/>
+  </g>
+  <!-- Accent node -->
+  <circle cx="150" cy="170" r="14" fill="#F2E9DA"/>
+  <!-- Wordmark -->
+  <text x="250" y="200" font-family="Arial Black, Arial, sans-serif" font-size="66" font-weight="900" letter-spacing="2" fill="#F2E9DA">BIOINFORMATICS</text>
+  <!-- Bold underline -->
+  <rect x="250" y="228" width="590" height="14" fill="#F2E9DA"/>
+  <rect x="250" y="252" width="300" height="8" fill="#F2E9DA"/>
+</svg></div>
+  </div>
+</section>
+
+<footer>BIOINFORMATICS — PUBLIC CODE LIBRARY · BLACK &amp; BEIGE EDITION</footer>
+
+<script>
+  function filterCards(domain, btn) {
+    document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.card').forEach(card => {
+      card.classList.toggle('hidden', domain !== 'All' && card.dataset.domain !== domain);
+    });
+  }
+  function copyCode(btn) {
+    const code = btn.parentElement.querySelector('code').innerText;
+    navigator.clipboard.writeText(code).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    });
+  }
+</script>
+
+</body>
+</html>
